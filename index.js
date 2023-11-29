@@ -20,3 +20,16 @@ userController
   .catch((error) => {
     console.error("Error updating user:", error);
   });
+
+userController
+  .deleteUser("65673792f81fb08fac87fe2b")
+  .then((result) => {
+    if (result.deletedCount === 1) {
+      console.log("User deleted successfully");
+    } else {
+      console.log("User not found or already deleted");
+    }
+  })
+  .catch((error) => {
+    console.error("Error deleting user:", error);
+  });
