@@ -39,21 +39,36 @@ exports.addUser = async (name, age) => {
 };
 
 exports.updateUser = async (id, name, age) => {
-    try {
-      await mongoClient.connect();
-  
-      const update_user = await mongoClient
-        .db("crud_mongo")
-        .collection("user")
-        .updateOne(
-          { _id: new ObjectId(id) }, 
-          { $set: { name, age } } 
-        );
-  
-      return update_user;
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      await mongoClient.close();
-    }
-  };
+  try {
+    await mongoClient.connect();
+
+    const update_user = await mongoClient
+      .db("crud_mongo")
+      .collection("user")
+      .updateOne({ _id: new ObjectId(id) }, { $set: { name, age } });
+
+    return update_user;
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
+exports.deleteUser = async (id) => {
+  try {
+    await mongoClient.connect();
+
+    const delete_user = await mongoClient
+      .db("crud_mongo")
+      .collection("user")
+      .deleteOne({ _id: new ObjectId(id) }); 
+
+    return delete_user;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  } finally {
+    await mongoClient.close();
+  }
+};
