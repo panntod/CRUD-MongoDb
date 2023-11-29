@@ -24,24 +24,18 @@ function executeCommand(command) {
         });
       });
       break;
+
     case "getUser":
       userController
         .getUser()
         .catch((err) => console.log("Cannot get data users \nError:", err))
         .finally(() => rl.close());
       break;
+
     case "updateUser":
-      userController
-        .updateUser("65673792f81fb08fac87fe2b", "asfina", 16)
-        .then((result) => {
-          console.log("User updated successfully:", result);
-          rl.close();
-        })
-        .catch((error) => {
-          console.error("Error updating user:", error);
-          rl.close();
-        });
+      getUserAndUpdate();
       break;
+
     case "deleteUser":
       userController
         .deleteUser("65673792f81fb08fac87fe2b")
@@ -61,6 +55,31 @@ function executeCommand(command) {
     default:
       console.log("Invalid command");
       rl.close();
+  }
+}
+
+async function getUserAndUpdate() {
+  try {
+    await userController.getUser();
+    rl.question("Enter Object Id: ", (id) => {
+      rl.question("Enter Name: ", (name) => {
+        rl.question("Enter Age: ", (age) => {
+          userController
+            .updateUser(id, name, parseInt(age))
+            .then((result) => {
+              console.log("User updated successfully:", result);
+              rl.close();
+            })
+            .catch((error) => {
+              console.error("Error updating user:", error);
+              rl.close();
+            });
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Error getting user:", error);
+    rl.close();
   }
 }
 
