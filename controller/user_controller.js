@@ -13,8 +13,7 @@ exports.getUser = async () => {
       .find({})
       .toArray();
 
-    let dataUser = JSON.stringify(get_users);
-    console.log(dataUser);
+    console.log(get_users);
   } catch (error) {
     console.error("Error:", error);
   } finally {
