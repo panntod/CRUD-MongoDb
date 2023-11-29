@@ -37,8 +37,21 @@ function executeCommand(command) {
       break;
 
     case "deleteUser":
+      getUserAndDelete();
+      break;
+
+    default:
+      console.log("Invalid command");
+      rl.close();
+  }
+}
+
+async function getUserAndDelete() {
+  try {
+    await userController.getUser();
+    rl.question("Enter Object id:", (id) => {
       userController
-        .deleteUser("65673792f81fb08fac87fe2b")
+        .deleteUser(id)
         .then((result) => {
           if (result.deletedCount === 1) {
             console.log("User deleted successfully");
@@ -51,10 +64,10 @@ function executeCommand(command) {
           console.error("Error deleting user:", error);
           rl.close();
         });
-      break;
-    default:
-      console.log("Invalid command");
-      rl.close();
+    });
+  } catch (error) {
+    console.error("Error getting user:", error);
+    rl.close();
   }
 }
 
