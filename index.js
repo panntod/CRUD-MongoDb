@@ -1,32 +1,36 @@
-const readline = require('readline');
+const readline = require("readline");
 const userController = require("./controller/user_controller");
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 function executeCommand(command) {
   switch (command) {
-    case 'addUser':
-      userController
-        .addUser("pandhu", 17)
-        .then((result) => {
-          console.log("User added successfully:", result);
-          rl.close();
-        })
-        .catch((err) => {
-          console.log("Error adding user:", err);
-          rl.close();
+    case "addUser":
+      rl.question("Enter name: ", (name) => {
+        rl.question("Enter age: ", (age) => {
+          userController
+            .addUser(name, parseInt(age))
+            .then((result) => {
+              console.log("User added successfully:", result);
+              rl.close();
+            })
+            .catch((err) => {
+              console.log("Error adding user:", err);
+              rl.close();
+            });
         });
+      });
       break;
-    case 'getUser':
+    case "getUser":
       userController
         .getUser()
         .catch((err) => console.log("Cannot get data users \nError:", err))
         .finally(() => rl.close());
       break;
-    case 'updateUser':
+    case "updateUser":
       userController
         .updateUser("65673792f81fb08fac87fe2b", "asfina", 16)
         .then((result) => {
@@ -38,7 +42,7 @@ function executeCommand(command) {
           rl.close();
         });
       break;
-    case 'deleteUser':
+    case "deleteUser":
       userController
         .deleteUser("65673792f81fb08fac87fe2b")
         .then((result) => {
@@ -55,11 +59,14 @@ function executeCommand(command) {
         });
       break;
     default:
-      console.log('Invalid command');
+      console.log("Invalid command");
       rl.close();
   }
 }
 
-rl.question('Enter command (addUser, getUser, updateUser, deleteUser): ', (command) => {
-  executeCommand(command);
-});
+rl.question(
+  "Enter command (addUser, getUser, updateUser, deleteUser): ",
+  (command) => {
+    executeCommand(command);
+  }
+);
