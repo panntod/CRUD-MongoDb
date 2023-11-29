@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const uri = "mongodb://127.0.0.1:27017";
 const mongoClient = new MongoClient(uri);
@@ -30,7 +30,7 @@ exports.addUser = async (name, age) => {
       .collection("user")
       .insertOne({ name, age });
 
-    return (insert_user);
+    return insert_user;
   } catch (error) {
     console.error("Error:", error);
   } finally {
@@ -38,3 +38,22 @@ exports.addUser = async (name, age) => {
   }
 };
 
+exports.updateUser = async (id, name, age) => {
+    try {
+      await mongoClient.connect();
+  
+      const update_user = await mongoClient
+        .db("crud_mongo")
+        .collection("user")
+        .updateOne(
+          { _id: new ObjectId(id) }, 
+          { $set: { name, age } } 
+        );
+  
+      return update_user;
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      await mongoClient.close();
+    }
+  };
