@@ -9,27 +9,17 @@ const rl = readline.createInterface({
 function executeCommand(command) {
   switch (command) {
     case "addUser":
-      rl.question("Enter name: ", (name) => {
-        rl.question("Enter age: ", (age) => {
-          userController
-            .addUser(name, parseInt(age))
-            .then((result) => {
-              console.log("User added successfully:", result);
-              rl.close();
-            })
-            .catch((err) => {
-              console.log("Error adding user:", err);
-              rl.close();
-            });
-        });
-      });
+      addNewUser();
       break;
 
     case "getUser":
       userController
         .getUser()
-        .catch((err) => console.log("Cannot get data users \nError:", err))
-        .finally(() => rl.close());
+        .then(() => rl.close())
+        .catch((err) => {
+          console.log("Cannot get data users \nError:", err);
+          rl.close();
+        });
       break;
 
     case "updateUser":
@@ -44,6 +34,27 @@ function executeCommand(command) {
       console.log("Invalid command");
       rl.close();
   }
+}
+
+function addNewUser() {
+  rl.question("Enter name: ", (name) => {
+    rl.question("Enter age: ", (age) => {
+      rl.question("Enter address: ", (address) => {
+        rl.question("Enter email: ", (email) => {
+          userController
+            .addUser(name, parseInt(age), address, email)
+            .then((result) => {
+              console.log("User added successfully:", result);
+              rl.close();
+            })
+            .catch((err) => {
+              console.log("Error adding user:", err);
+              rl.close();
+            });
+        });
+      });
+    });
+  });
 }
 
 async function getUserAndDelete() {
@@ -77,16 +88,20 @@ async function getUserAndUpdate() {
     rl.question("Enter Object Id: ", (id) => {
       rl.question("Enter Name: ", (name) => {
         rl.question("Enter Age: ", (age) => {
-          userController
-            .updateUser(id, name, parseInt(age))
-            .then((result) => {
-              console.log("User updated successfully:", result);
-              rl.close();
-            })
-            .catch((error) => {
-              console.error("Error updating user:", error);
-              rl.close();
+          rl.question("Enter Address: ", (address) => {
+            rl.question("Enter Email: ", (email) => {
+              userController
+                .updateUser(id, name, parseInt(age), address, email)
+                .then((result) => {
+                  console.log("User updated successfully:", result);
+                  rl.close();
+                })
+                .catch((error) => {
+                  console.error("Error updating user:", error);
+                  rl.close();
+                });
             });
+          });
         });
       });
     });
