@@ -1,74 +1,54 @@
-const { MongoClient, ObjectId } = require("mongodb");
-
-const uri = "mongodb://127.0.0.1:27017";
-const mongoClient = new MongoClient(uri);
+const User = require("./models/user_model");
 
 exports.getUser = async () => {
   try {
-    await mongoClient.connect();
-
-    const get_users = await mongoClient
-      .db("crud_mongo")
-      .collection("user")
-      .find({})
-      .toArray();
-
-    console.log(get_users);
+    const users = await User.find({});
+    console.log(users);
+    return users;
   } catch (error) {
     console.error("Error:", error);
-  } finally {
-    await mongoClient.close();
+    throw error;
   }
 };
 
-exports.addUser = async (name, age) => {
+exports.addUser = async (name, age, address, email) => {
   try {
-    await mongoClient.connect();
-
-    const insert_user = await mongoClient
-      .db("crud_mongo")
-      .collection("user")
-      .insertOne({ name, age });
-
-    return insert_user;
+    const newUser = new User({ name, age, address, email });
+    const insertedUser = await newUser.save();
+    console.log("User added successfully:", insertedUser);
+    return insertedUser;
   } catch (error) {
     console.error("Error:", error);
-  } finally {
-    await mongoClient.close();
+    throw error;
   }
 };
 
-exports.updateUser = async (id, name, age) => {
+exports.updateUser = async (id, name, age, address, email) => {
   try {
-    await mongoClient.connect();
-
-    const update_user = await mongoClient
-      .db("crud_mongo")
-      .collection("user")
-      .updateOne({ _id: new ObjectId(id) }, { $set: { name, age } });
-
-    return update_user;
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, age, address, email },
+      { new: true }
+    );
+    console.log("User updated successfully:", updatedUser);
+    return updatedUser;
   } catch (error) {
     console.error("Error:", error);
-  } finally {
-    await mongoClient.close();
+    throw error;
   }
 };
 
 exports.deleteUser = async (id) => {
   try {
-    await mongoClient.connect();
-
-    const delete_user = await mongoClient
-      .db("crud_mongo")
-      .collection("user")
-      .deleteOne({ _id: new ObjectId(id) }); 
-
-    return delete_user;
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      console.log("User not found or already deleted");
+    } else {
+      console.log("User deleted successfully");
+    }
+    return deletedUser;
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  } finally {
-    await mongoClient.close();
   }
 };
