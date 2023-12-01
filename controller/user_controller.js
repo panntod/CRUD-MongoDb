@@ -1,6 +1,8 @@
-const User = require("./models/user_model");
+const { connectDB, closeDB } = require("../config/connection");
+const User = require("../models/user_model");
 
 exports.getUser = async () => {
+  await connectDB();
   try {
     const users = await User.find({});
     console.log(users);
@@ -8,47 +10,58 @@ exports.getUser = async () => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
+  }  finally{
+    await closeDB()
   }
 };
 
 exports.addUser = async (name, age, address, email) => {
+  await connectDB();
   try {
     const newUser = new User({ name, age, address, email });
     const insertedUser = await newUser.save();
-    console.log("User added successfully:", insertedUser);
     return insertedUser;
   } catch (error) {
     console.error("Error:", error);
     throw error;
+  }  finally{
+    await closeDB()
   }
 };
 
 exports.updateUser = async (id, name, age, address, email) => {
+  await connectDB();
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { name, age, address, email },
       { new: true }
     );
-    console.log("User updated successfully:", updatedUser);
     return updatedUser;
   } catch (error) {
     console.error("Error:", error);
     throw error;
+  } finally{
+    await closeDB()
   }
 };
 
 exports.deleteUser = async (id) => {
+  await connectDB();
   try {
     const deletedUser = await User.findByIdAndDelete(id);
+
     if (!deletedUser) {
       console.log("User not found or already deleted");
-    } else {
-      console.log("User deleted successfully");
+    } else{
+      console.log("Success Deleted User");
     }
+
     return deletedUser;
   } catch (error) {
     console.error("Error:", error);
     throw error;
+  }  finally{
+    await closeDB()
   }
 };
