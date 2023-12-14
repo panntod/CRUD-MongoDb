@@ -1,8 +1,6 @@
-const { connectDB, closeDB } = require("../config/connection");
 const User = require("../models/user_model");
 
 exports.getUser = async () => {
-  await connectDB();
   try {
     const users = await User.find({});
     console.log(users);
@@ -10,13 +8,10 @@ exports.getUser = async () => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  }  finally{
-    await closeDB()
-  }
+  } 
 };
 
 exports.addUser = async (name, age, address, email) => {
-  await connectDB();
   try {
     const newUser = new User({ name, age, address, email });
     const insertedUser = await newUser.save();
@@ -24,13 +19,10 @@ exports.addUser = async (name, age, address, email) => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  }  finally{
-    await closeDB()
-  }
+  } 
 };
 
 exports.updateUser = async (id, name, age, address, email) => {
-  await connectDB();
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -41,13 +33,10 @@ exports.updateUser = async (id, name, age, address, email) => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  } finally{
-    await closeDB()
   }
 };
 
 exports.deleteUser = async (id) => {
-  await connectDB();
   try {
     const deletedUser = await User.findByIdAndDelete(id);
 
@@ -61,7 +50,5 @@ exports.deleteUser = async (id) => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  }  finally{
-    await closeDB()
-  }
+  } 
 };
