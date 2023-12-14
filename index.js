@@ -1,5 +1,6 @@
 const readline = require("readline");
 const userController = require("./controller/user_controller");
+const { connectDB } = require("./config/connection");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -111,9 +112,15 @@ async function getUserAndUpdate() {
   }
 }
 
-rl.question(
-  "Enter command (addUser, getUser, updateUser, deleteUser): ",
-  (command) => {
-    executeCommand(command);
-  }
-);
+connectDB()
+  .then(() => {
+    rl.question(
+      "Enter command (addUser, getUser, updateUser, deleteUser): ",
+      (command) => {
+        executeCommand(command);
+      }
+    );
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
